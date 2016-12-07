@@ -1,10 +1,11 @@
 import numpy as np
 import sys
 sys.path.append("install/lib/python2.7/site-packages/")
-sys.path.append("/home/surhud/gittest/COSMOS/cosmic/aum_mini/cosmic/lib/python2.7/site-packages/")
+sys.path.append("../aum/install/lib/python2.7/site-packages/")
 import cosmology as cc
 import jla
 import frogress
+import emcee
 
 verbosity=0
 likelihood = jla.JLALikelihood(verbosity)
@@ -50,5 +51,5 @@ par = np.array([0.1410, 3.1010, -19.05, -0.070, 0.30, 0.1])
 ndim, nwalkers = 6, 20
 p0 = [par+0.1*par*np.random.rand(ndim) for i in range(nwalkers)]
 
-sampler = emcee.EnsembleSampler(nwalkers, ndim, loglikelihood)
+sampler = emcee.EnsembleSampler(nwalkers, ndim, loglikelihood, threads=24)
 sampler.run_mcmc(p0, 1000)

@@ -66,6 +66,7 @@ public:
    * Return the redshift of all SN in the sample.
    */
   virtual double * getZ();
+  virtual double * getZhel();
   
   /*
    * Compute the negative log-likelihood of a set of distance modulii

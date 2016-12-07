@@ -322,6 +322,20 @@ double * JLALikelihood::getZ()
   return z;
 }
 
+/*
+ * Return the redshift of all SN in the sample.
+ */
+double * JLALikelihood::getZhel()
+{
+  double * z = (double *)malloc(sizeof(double) * size());
+  for (int i=0; i < size(); i++)
+    {
+      z[i] = lcpars[i].zhel;
+    }
+  return z;
+}
+
+
 
 /*
  * Free the allocated memory
@@ -453,7 +467,6 @@ double * SimplifiedJLALikelihood::getZ()
     }
   return z;
 }
-
 
 /*
  * Compute the standardized residuals of the JLA sample to the
