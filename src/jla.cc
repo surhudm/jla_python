@@ -308,6 +308,57 @@ int JLALikelihood::computeResiduals(double * distance_modulii, double * nuisance
 
 
 // -------------------------- Misc  ---------------------------------------
+double *JLALikelihood::computemu(double * nuisance_parameters)
+{
+  int n = lcpars.size();
+
+  double alpha = nuisance_parameters[0];
+  double beta = nuisance_parameters[1];
+  double M = nuisance_parameters[2];
+  double DeltaM = nuisance_parameters[3];
+
+  double *mu = (double *)malloc(sizeof(double) * n);
+  for (int i = 0; i < n; i++)
+    {
+      LCPar sn = lcpars[i];
+      // Compute distance modulus estimate
+      mu[i] = sn.mb - (M - alpha * sn.x1 + beta * sn.color + DeltaM * (sn.thirdvar > scriptmcut));
+    }
+
+  return mu;
+}
+
+double * JLALikelihood::computecovariance(double * nuisance_parameters)
+{
+  int n = lcpars.size();
+
+  double alpha = nuisance_parameters[0];
+  double beta = nuisance_parameters[1];
+  double M = nuisance_parameters[2];
+  double DeltaM = nuisance_parameters[3];
+
+  // Covariance matrix computation
+  double *cov = (double *)malloc(sizeof(double) * sq(n));
+  cblas_dcopy(sq(n), C00, 1, cov, 1);
+  cblas_daxpy(sq(n), sq(alpha), C11, 1, cov, 1);
+  cblas_daxpy(sq(n), sq(beta), C22, 1, cov, 1);
+  cblas_daxpy(sq(n), 2.0 * alpha, C01, 1, cov, 1);
+  cblas_daxpy(sq(n), -2.0 * beta, C02, 1, cov, 1);
+  cblas_daxpy(sq(n), -2.0 * alpha * beta, C12, 1, cov, 1);
+  
+  for (int i = 0; i < n; i++)
+    {
+      LCPar sn = lcpars[i];
+      // Update the diagonal terms of the covariance matrix with statistical error
+      cov[i * n + i] += sq(sn.dmb) + sq(alpha * sn.dx1) + sq(beta * sn.dcolor)
+        + 2.0 * alpha * sn.cov_m_s
+        - 2.0 * beta * sn.cov_m_c
+        - 2.0 * alpha * beta * sn.cov_s_c;
+    }
+  
+  return cov;
+}
+
 
 /*
  * Return the redshift of all SN in the sample.

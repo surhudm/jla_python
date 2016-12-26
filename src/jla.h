@@ -113,6 +113,8 @@ public:
    * 0 if the computation is successful, -1 otherwise.
    */
   virtual int computeResiduals(double * distance_moduli, double * nuisance_par, double * residuals);
+  virtual double * computecovariance(double * nuisance_par);
+  virtual double * computemu(double * nuisance_par);
   
   int verbosity;
   std::vector<LCPar> lcpars;

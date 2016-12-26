@@ -12,6 +12,7 @@ likelihood = jla.JLALikelihood(verbosity)
 #likelihood.read("data/z_0.20_0.50/jla.dataset")
 likelihood.read("data/jla.dataset")
 zsn = jla.doubleArray_frompointer(likelihood.getZ())
+zhel = jla.doubleArray_frompointer(likelihood.getZhel())
 nuisance_parameters = jla.doubleArray(4)
 snsize = likelihood.size()
 mu = jla.doubleArray(snsize)
@@ -36,7 +37,7 @@ def computechisq(par):
     mainpar = par[4:]
     aum = cc.cosmology(mainpar[0], mainpar[1], -1.0, 0.0, 0.0476, 0.7, 2.7255, 0.8, 0.96, np.log10(8.0), 1.0)
     for i in range(snsize):
-        mu[i] = 25.0+5.0*np.log10(aum.Dlofz(zsn[i])/0.7)
+        mu[i] = 25.0+5.0*np.log10((1.+zhel[i])*aum.Dcofz(zsn[i])/0.7)
         #print zsn[i], aum.Dlofz(zsn[i])/0.7
     
     chisq = likelihood.computeLikelihood(mu, nuisance_parameters)  
