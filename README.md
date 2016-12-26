@@ -7,3 +7,12 @@ The original code was downloaded from:
 http://supernovae.in2p3.fr/sdss_snls_jla/ReadMe.html
 
 I have added swig files and the python wrappers for the JLA code and added in example code which shows how to perform the cosmological analysis from the JLA sample.
+
+For installation run:
+
+```bash
+python setup.py install --prefix=`pwd`/install
+python setup.py install --prefix=`pwd`/install
+```
+
+Check the file test_cosmo.py
